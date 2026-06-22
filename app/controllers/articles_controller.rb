@@ -8,8 +8,11 @@ class ArticlesController < ApplicationController
   end
 
   def new
-    puts "NEW ACTION CALLED"
     @article = Article.new
+  end
+
+  def edit
+    @article = Article.find(params[:id])
   end
 
   def create
@@ -18,8 +21,17 @@ class ArticlesController < ApplicationController
       flash[:notice] = "Article was created successfully."
       redirect_to @article
     else
-      puts "CREATE ACTION ERRORS: #{@article.errors.full_messages}"
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    @article = Article.find(params[:id])
+    if @article.update(params.require(:article).permit(:title, :description))
+      flash[:notice] = "Article was updated successfully."
+      redirect_to @article
+    else
+      render "edit", status: :unprocessable_entity
     end
   end
 end
